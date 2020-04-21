@@ -1,13 +1,13 @@
 package com.leon.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-@Document
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Document("Usage")
 public class Usage
 {
     @Id
@@ -15,14 +15,33 @@ public class Usage
     private String app;
     private String user;
     private String action;
-    private List<Integer> monthlyCount = new ArrayList<>();
+    //private Date lastUsedTimeStamp; // TODO
+    private List<OptionalInt> monthlyCount;
 
-    public Usage(String app, String user, String action, List<Integer> monthlyCount)
+    public Usage()
     {
+        this.id = "";
+        this.app = "";
+        this.user = "";
+        this.action = "";
+        this.monthlyCount = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
+    }
+
+    public Usage(String app, String user, String action, List<OptionalInt> monthlyCount)
+    {
+        this.id = "";
         this.app = app;
         this.user = user;
         this.action = action;
-        //TODO perfect
+        this.monthlyCount = new ArrayList<>(monthlyCount);
+    }
+
+    public Usage(String id, String app, String user, String action, List<OptionalInt> monthlyCount)
+    {
+        this.id = id;
+        this.app = app;
+        this.user = user;
+        this.action = action;
         this.monthlyCount = new ArrayList<>(monthlyCount);
     }
 
@@ -66,12 +85,12 @@ public class Usage
         this.action = action;
     }
 
-    public List<Integer> getMonthlyCount()
+    public List<OptionalInt> getMonthlyCount()
     {
         return monthlyCount;
     }
 
-    public void setMonthlyCount(List<Integer> monthlyCount)
+    public void setMonthlyCount(List<OptionalInt> monthlyCount)
     {
         this.monthlyCount = monthlyCount;
     }
