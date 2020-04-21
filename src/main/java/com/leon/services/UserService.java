@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface UserService
 {
-    void saveUsage(String app, String user, String action, boolean countUsage);
+    void initialize();
+    int getCurrentMonthIndex();
+    void saveUsage(String app, String user, String action);
     List<Usage> getUsage(String app);
 }

@@ -27,12 +27,12 @@ public class UserServiceImpl implements UserService
     @PostConstruct
     public void initialize()
     {
-        usageMap = usageRepository.findAll(sortByIdAsc())
+        usageMap = usageRepository.findAll(new Sort(Sort.Direction.ASC, "app"))
                 .stream()
                 .collect(groupingBy(Usage::getApp));
     }
 
-    private int getCurrentMonthIndex()
+    public int getCurrentMonthIndex()
     {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    synchronized public void saveUsage(String app, String user, String action, boolean countUsage)
+    synchronized public void saveUsage(String app, String user, String action)
     {
         Usage newUsage;
         List<Usage> appUsageList = usageMap.get(app);
@@ -57,35 +57,31 @@ public class UserServiceImpl implements UserService
 
         if(appUsageList != null && appUsageList.size() > 0)
         {
-            if(countUsage)
+            currentCount = 1;
+            monthlyCounts = createMonthlyCount(currentMonthIndex, currentCount);
+
+            for(int index = 0; index < appUsageList.size(); ++index)
             {
-                currentCount = 1;
-                for(int index = 0; index < appUsageList.size(); ++index)
+                if(appUsageList.get(index).getUser().equalsIgnoreCase(user) && appUsageList.get(index).getAction().equalsIgnoreCase(action))
                 {
-                    if(appUsageList.get(index).getUser().equalsIgnoreCase(user) && appUsageList.get(index).getAction().equalsIgnoreCase(action))
-                    {
-                        monthlyCounts = appUsageList.get(index).getMonthlyCount();
-                        if(monthlyCounts.size() > 0)
-                        {
-                            int currentMonthCount = monthlyCounts.get(currentMonthIndex).orElse(0);
-                            currentCount = ++currentMonthCount;
-                        }
-                        break;
-                    }
+                    monthlyCounts = appUsageList.get(index).getMonthlyCount();
+                    int currentMonthCount = monthlyCounts.get(currentMonthIndex).orElse(0);
+                    currentCount = ++currentMonthCount;
+                    monthlyCounts.set(currentMonthIndex, OptionalInt.of(currentCount));
+                    newUsage = new Usage(app, user, action, monthlyCounts);
+                    break;
                 }
-                monthlyCounts = createMonthlyCount(currentMonthIndex, currentCount);
             }
         }
         else
         {
             appUsageList = new ArrayList<>();
-            monthlyCounts = createMonthlyCount(currentMonthIndex, currentCount);
+            monthlyCounts = createMonthlyCount(currentMonthIndex, ++currentCount);
+            newUsage = new Usage(app, user, action, monthlyCounts);
+            appUsageList.add(newUsage);
+            usageMap.put(app, appUsageList);
+            usageRepository.save(newUsage);
         }
-
-        newUsage = new Usage(app, user, action, monthlyCounts);
-        appUsageList.add(newUsage);
-        usageMap.put(app, appUsageList);
-        usageRepository.save(newUsage);
     }
 
     @Override

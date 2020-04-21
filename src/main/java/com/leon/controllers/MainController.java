@@ -27,10 +27,10 @@ public class MainController
 
     @CrossOrigin
     @RequestMapping(value="/usage", method=RequestMethod.POST)
-    public void saveUsage(@RequestParam String app,@RequestParam String user, @RequestParam String action, @RequestParam boolean countUsage)
+    public void saveUsage(@RequestParam String app,@RequestParam String user, @RequestParam String action)
     {
         logger.info("Received request to persist usage data point for app: {}, and user: {}", app, user);
-        this.userService.saveUsage(app, user, action, countUsage);
+        this.userService.saveUsage(app, user, action);
     }
 
     @CrossOrigin

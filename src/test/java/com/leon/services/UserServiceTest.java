@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
@@ -33,7 +34,7 @@ public class UserServiceTest
         // Arrange
         Usage usage = new Usage("users app", "horatio", "get configurations", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0))));
         // Act
-        userService.saveUsage("users app", "horatio", "get configurations", false);
+        userService.saveUsage("users app", "horatio", "get configurations");
         // Assert
         verify(userRepositoryMock, times(1)).save(usage);
     }
@@ -42,10 +43,19 @@ public class UserServiceTest
     public void whenPassedValidConfiguration()
     {
         // Arrange
-        List<Usage> usage = Arrays.asList(
-                new Usage("users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)))),
-                new Usage("user app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)))));
+        List<Usage> usages = Arrays.asList(
+                new Usage("users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)))),
+                new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(1)))));
 
-        when(userRepositoryMock.findAll()).thenReturn(usage);
+        when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
+        userService.initialize();
+        List<OptionalInt> monthlyCounts = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)));
+        monthlyCounts.set(userService.getCurrentMonthIndex(), OptionalInt.of(11));
+
+        Usage usage = new Usage("users app", "horatio", "get configuration", monthlyCounts);
+        // Act
+        userService.saveUsage("users app", "horatio", "get configuration");
+        // Assert
+        verify(userRepositoryMock, times(1)).save(usage);
     }
 }
