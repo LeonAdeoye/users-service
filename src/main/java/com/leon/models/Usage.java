@@ -15,7 +15,7 @@ public class Usage
     private String app;
     private String user;
     private String action;
-    //private Date lastUsedTimeStamp; // TODO
+    private Date lastUsedTimeStamp;
     private List<OptionalInt> monthlyCount;
 
     public Usage()
@@ -24,6 +24,7 @@ public class Usage
         this.app = "";
         this.user = "";
         this.action = "";
+        lastUsedTimeStamp = new Date();
         this.monthlyCount = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
     }
 
@@ -33,6 +34,7 @@ public class Usage
         this.app = app;
         this.user = user;
         this.action = action;
+        this.lastUsedTimeStamp = new Date();
         this.monthlyCount = new ArrayList<>(monthlyCount);
     }
 
@@ -42,6 +44,7 @@ public class Usage
         this.app = app;
         this.user = user;
         this.action = action;
+        this.lastUsedTimeStamp = new Date();
         this.monthlyCount = new ArrayList<>(monthlyCount);
     }
 
@@ -95,6 +98,11 @@ public class Usage
         this.monthlyCount = monthlyCount;
     }
 
+    public Date getLastUsedTimeStamp()
+    {
+        return lastUsedTimeStamp;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -103,6 +111,7 @@ public class Usage
         Usage usage = (Usage) o;
         return id.equals(usage.id) &&
                 app.equals(usage.app) &&
+                lastUsedTimeStamp.equals(usage.lastUsedTimeStamp) &&
                 user.equals(usage.user) &&
                 action.equals(usage.action) &&
                 monthlyCount.equals(usage.monthlyCount);
@@ -111,7 +120,7 @@ public class Usage
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, app, user, action, monthlyCount);
+        return Objects.hash(id, app, user, action, monthlyCount, lastUsedTimeStamp);
     }
 
     @Override
@@ -122,6 +131,7 @@ public class Usage
                 ", app='" + app + '\'' +
                 ", user='" + user + '\'' +
                 ", action='" + action + '\'' +
+                ", lastUpdatedTimestamp='" + lastUsedTimeStamp + '\'' +
                 ", monthlyCount=" + monthlyCount +
                 '}';
     }
