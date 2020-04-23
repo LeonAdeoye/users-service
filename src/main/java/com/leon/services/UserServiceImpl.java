@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.leon.repositories.UsageRepository;
-
 import javax.annotation.PostConstruct;
 import java.util.*;
 
@@ -49,39 +48,25 @@ public class UserServiceImpl implements UserService
     @Override
     synchronized public void saveUsage(String app, String user, String action)
     {
-        Usage newUsage;
-        List<Usage> appUsageList = usageMap.get(app);
-        List<OptionalInt> monthlyCounts = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
+        List<Usage> appUsageList = usageMap.containsKey(app) ? usageMap.get(app) : new ArrayList<>();
         int currentMonthIndex = getCurrentMonthIndex();
-        int currentCount = 0;
 
-        if(appUsageList != null && appUsageList.size() > 0)
+        for(int index = 0; index < appUsageList.size(); ++index)
         {
-            currentCount = 1;
-            monthlyCounts = createMonthlyCount(currentMonthIndex, currentCount);
-
-            for(int index = 0; index < appUsageList.size(); ++index)
+            if(appUsageList.get(index).getUser().equalsIgnoreCase(user) && appUsageList.get(index).getAction().equalsIgnoreCase(action))
             {
-                if(appUsageList.get(index).getUser().equalsIgnoreCase(user) && appUsageList.get(index).getAction().equalsIgnoreCase(action))
-                {
-                    monthlyCounts = appUsageList.get(index).getMonthlyCount();
-                    int currentMonthCount = monthlyCounts.get(currentMonthIndex).orElse(0);
-                    currentCount = ++currentMonthCount;
-                    monthlyCounts.set(currentMonthIndex, OptionalInt.of(currentCount));
-                    newUsage = new Usage(app, user, action, monthlyCounts);
-                    break;
-                }
+                List<OptionalInt> monthlyCounts = appUsageList.get(index).getMonthlyCount();
+                int currentMonthCount = monthlyCounts.get(currentMonthIndex).orElse(0);
+                monthlyCounts.set(currentMonthIndex, OptionalInt.of(++currentMonthCount));
+                usageRepository.save( new Usage(app, user, action, monthlyCounts));
+                return;
             }
         }
-        else
-        {
-            appUsageList = new ArrayList<>();
-            monthlyCounts = createMonthlyCount(currentMonthIndex, ++currentCount);
-            newUsage = new Usage(app, user, action, monthlyCounts);
-            appUsageList.add(newUsage);
-            usageMap.put(app, appUsageList);
-            usageRepository.save(newUsage);
-        }
+
+        Usage newUsage = new Usage(app, user, action, createMonthlyCount(currentMonthIndex, 1));
+        appUsageList.add(newUsage);
+        usageMap.put(app, appUsageList);
+        usageRepository.save(newUsage);
     }
 
     @Override
