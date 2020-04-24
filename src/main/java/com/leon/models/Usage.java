@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -15,7 +16,7 @@ public class Usage
     private String app;
     private String user;
     private String action;
-    private Date lastUsedTimeStamp;
+    private LocalDate lastUsageDate;
     private List<OptionalInt> monthlyCount;
 
     public Usage()
@@ -24,7 +25,7 @@ public class Usage
         this.app = "";
         this.user = "";
         this.action = "";
-        lastUsedTimeStamp = new Date();
+        this.lastUsageDate = LocalDate.now();
         this.monthlyCount = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
     }
 
@@ -34,7 +35,7 @@ public class Usage
         this.app = app;
         this.user = user;
         this.action = action;
-        this.lastUsedTimeStamp = new Date();
+        this.lastUsageDate = LocalDate.now();
         this.monthlyCount = new ArrayList<>(monthlyCount);
     }
 
@@ -44,13 +45,13 @@ public class Usage
         this.app = app;
         this.user = user;
         this.action = action;
-        this.lastUsedTimeStamp = new Date();
+        this.lastUsageDate = LocalDate.now();
         this.monthlyCount = new ArrayList<>(monthlyCount);
     }
 
     public String getId()
     {
-        return id;
+        return this.id;
     }
 
     public void setId(String id)
@@ -60,7 +61,7 @@ public class Usage
 
     public String getApp()
     {
-        return app;
+        return this.app;
     }
 
     public void setApp(String app)
@@ -70,7 +71,7 @@ public class Usage
 
     public String getUser()
     {
-        return user;
+        return this.user;
     }
 
     public void setUser(String user)
@@ -80,7 +81,7 @@ public class Usage
 
     public String getAction()
     {
-        return action;
+        return this.action;
     }
 
     public void setAction(String action)
@@ -90,7 +91,7 @@ public class Usage
 
     public List<OptionalInt> getMonthlyCount()
     {
-        return monthlyCount;
+        return this.monthlyCount;
     }
 
     public void setMonthlyCount(List<OptionalInt> monthlyCount)
@@ -98,9 +99,9 @@ public class Usage
         this.monthlyCount = monthlyCount;
     }
 
-    public Date getLastUsedTimeStamp()
+    public LocalDate getLastUsageDate()
     {
-        return lastUsedTimeStamp;
+        return this.lastUsageDate;
     }
 
     @Override
@@ -109,30 +110,30 @@ public class Usage
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Usage usage = (Usage) o;
-        return id.equals(usage.id) &&
-                app.equals(usage.app) &&
-                lastUsedTimeStamp.equals(usage.lastUsedTimeStamp) &&
-                user.equals(usage.user) &&
-                action.equals(usage.action) &&
-                monthlyCount.equals(usage.monthlyCount);
+        return this.id.equals(usage.id) &&
+                this.app.equals(usage.app) &&
+                this.lastUsageDate.equals(usage.lastUsageDate) &&
+                this.user.equals(usage.user) &&
+                this.action.equals(usage.action) &&
+                this.monthlyCount.equals(usage.monthlyCount);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, app, user, action, monthlyCount, lastUsedTimeStamp);
+        return Objects.hash(this.id, this.app, this.user, this.action, this.monthlyCount, this.lastUsageDate);
     }
 
     @Override
     public String toString()
     {
         return "Usage{" +
-                "id='" + id + '\'' +
-                ", app='" + app + '\'' +
-                ", user='" + user + '\'' +
-                ", action='" + action + '\'' +
-                ", lastUpdatedTimestamp='" + lastUsedTimeStamp + '\'' +
-                ", monthlyCount=" + monthlyCount +
+                "id='" + this.id + '\'' +
+                ", app='" + this.app + '\'' +
+                ", user='" + this.user + '\'' +
+                ", action='" + this.action + '\'' +
+                ", lastUsageDate='" + this.lastUsageDate + '\'' +
+                ", monthlyCount=" + this.monthlyCount +
                 '}';
     }
 }
