@@ -3,19 +3,15 @@ import com.leon.models.Usage;
 import com.leon.repositories.UsageRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -53,7 +49,6 @@ public class UserServiceTest
         userService.initialize();
         List<OptionalInt> monthlyCounts = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
         monthlyCounts.set(userService.getCurrentMonthIndex(), OptionalInt.of(1));
-
         Usage usage = new Usage("users app", "saori", "get configuration", monthlyCounts);
         // Act
         userService.saveUsage("users app", "saori", "get configuration");
@@ -73,7 +68,6 @@ public class UserServiceTest
         userService.initialize();
         List<OptionalInt> monthlyCounts = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
         monthlyCounts.set(userService.getCurrentMonthIndex(), OptionalInt.of(1));
-
         Usage usage = new Usage("config app", "saori", "get configuration", monthlyCounts);
         // Act
         userService.saveUsage("config app", "saori", "get configuration");
@@ -88,16 +82,61 @@ public class UserServiceTest
         List<Usage> usages = Arrays.asList(
                 new Usage("users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)))),
                 new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(1)))));
-
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
         userService.initialize();
         List<OptionalInt> monthlyCounts = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)));
         monthlyCounts.set(userService.getCurrentMonthIndex(), OptionalInt.of(11));
-
         Usage usage = new Usage("users app", "horatio", "get configuration", monthlyCounts);
         // Act
         userService.saveUsage("users app", "horatio", "get configuration");
         // Assert
         verify(userRepositoryMock, times(1)).save(usage);
     }
+
+    @Test
+    public void whenPassedExistingAppAndExistingUser_getUsage_shouldReturnCorrectSizeOf1()
+    {
+        // Arrange
+        List<Usage> usages = Arrays.asList(
+                new Usage("users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)))),
+                new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(20)))),
+                new Usage("config app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(30)))));
+        when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
+        userService.initialize();
+        // Act
+        List<Usage> result = userService.getUsage("users app", Optional.of("horatio"));
+        // Assert
+        assertEquals("should return only 1 usage in list", result.size(), 1);
+    }
+
+    @Test
+    public void whenPassedExistingAppOnly_getUsage_shouldReturnCorrectSizeOf2()
+    {
+        // Arrange
+        List<Usage> usages = Arrays.asList(
+                new Usage("users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)))),
+                new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(20)))),
+                new Usage("config app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(30)))));
+        when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
+        userService.initialize();
+        // Act
+        List<Usage> result = userService.getUsage("users app", Optional.empty());
+        // Assert
+        assertEquals("should return only 2 usages in list", result.size(), 2);
+    }
+
+//    @Test
+//    public void whenPassedExistingAppOnly_initialize_shouldReturnCorrectSizeOf2()
+//    {
+//        // Arrange
+//        List<Usage> usages = Arrays.asList(
+//                new Usage("users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(10)))),
+//                new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(20)))),
+//                new Usage("config app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, OptionalInt.of(30)))));
+//        when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
+//        // Act
+//        userService.initialize();
+//        // Assert
+//        verify(userRepositoryMock, times(1)).findAll();
+//    }
 }

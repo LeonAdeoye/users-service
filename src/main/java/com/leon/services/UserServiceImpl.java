@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.leon.repositories.UsageRepository;
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -27,8 +28,8 @@ public class UserServiceImpl implements UserService
     public void initialize()
     {
         usageMap = usageRepository.findAll(new Sort(Sort.Direction.ASC, "app"))
-                .stream()
-                .collect(groupingBy(Usage::getApp));
+            .stream()
+            .collect(groupingBy(Usage::getApp));
     }
 
     public int getCurrentMonthIndex()
@@ -70,8 +71,11 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public List<Usage> getUsage(String app)
+    public List<Usage> getUsage(String app, Optional<String> user)
     {
-        return usageRepository.findByApp(app);
+        if(user.isPresent())
+            return usageMap.get(app).stream().filter(usage -> usage.getUser() == user.get()).collect(Collectors.toList());
+        else
+            return usageMap.get(app);
     }
 }
