@@ -54,13 +54,14 @@ public class UserServiceImpl implements UserService
 
         for(int index = 0; index < appUsageList.size(); ++index)
         {
-            if(appUsageList.get(index).getUser().equalsIgnoreCase(newUsage.getUser()) && appUsageList.get(index).getAction().equalsIgnoreCase(newUsage.getAction()))
+            Usage existingUsage = appUsageList.get(index);
+            if(existingUsage.getUser().equalsIgnoreCase(newUsage.getUser()) && existingUsage.getAction().equalsIgnoreCase(newUsage.getAction()))
             {
-                List<Integer> monthlyCounts = appUsageList.get(index).getMonthlyCount();
+                List<Integer> monthlyCounts = existingUsage.getMonthlyCount();
                 int currentMonthCount = monthlyCounts.get(currentMonthIndex);
                 monthlyCounts.set(currentMonthIndex, ++currentMonthCount);
-                newUsage.setMonthlyCount(monthlyCounts);
-                usageRepository.save(newUsage);
+                existingUsage.setMonthlyCount(monthlyCounts);
+                usageRepository.save(existingUsage);
                 return;
             }
         }

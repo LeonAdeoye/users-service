@@ -4,6 +4,7 @@ import com.leon.models.Usage;
 import com.leon.services.ConfigurationService;
 import com.leon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class MainController
     }
 
     @CrossOrigin
-    @RequestMapping(value="/usage", method=RequestMethod.GET)
+    @RequestMapping(value="/usage", method=RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     public List<Usage> getUsage(@RequestParam String app, @RequestParam Optional<String> user)
     {
         if(app == null || app.isEmpty())
