@@ -1,8 +1,6 @@
 package com.leon.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leon.models.Configuration;
-import com.leon.models.Usage;
 import com.leon.services.ConfigurationService;
 import com.leon.services.UserService;
 import org.junit.Test;
@@ -12,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
@@ -124,30 +120,148 @@ public class MainControllerTest
         verify(userServiceMock, times(1)).initialize();
     }
 
-//    @Test
-//    public void configurationPostRequestWhenPassedValidRequestBody_ShouldCallConfigurationServiceSaveConfigurationMethod() throws Exception
-//    {
-//        // Arrange
-//        Usage usage = new Usage("Horatio", "surname", "Adeoye", "papa", "today");
-//        // Act
-//        mockMVC.perform(post("/usage")
-//                .content(asJsonString(usage))
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//        // Assert
-//        verify(userServiceMock, times(1)).saveUsage(any(Usage.class));
-//    }
-//
-//    @Test()
-//    public void configurationPostRequestWithoutRequestBody_ShouldNeverCallConfigurationServiceSaveConfigurationMethod() throws Exception
-//    {
-//        // Act
-//        mockMVC.perform(post("/configuration")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//        // Assert
-//        verify(configurationServiceMock, never()).saveConfiguration(null);
-//    }
+    @Test
+    public void usagePostRequestWhenPassedValidRequestBody_ShouldCallUserServiceSaveUsageMethod() throws Exception
+    {
+        // Act
+        mockMVC.perform(post("/usage")
+                .param("app", "users app")
+                .param("user", "horatio")
+                .param("action", "get usage"))
+                .andExpect(status().isOk());
+        // Assert
+        verify(userServiceMock, times(1)).saveUsage("users app", "horatio", "get usage");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void usagePostRequestWhenPassedInvalidAppParam_ShouldThrowIllegalArgumentException() throws Throwable
+    {
+        try
+        {
+            // Act
+            mockMVC.perform(post("/usage")
+                    .param("app", null)
+                    .param("user", "horatio")
+                    .param("action", "get usage"));
+        }
+        catch(NestedServletException e)
+        {
+            // Assert
+            verify(userServiceMock, never()).saveUsage(null, "horatio", "get usage");
+            assertNotNull( e );
+            assertNotNull( e.getCause() );
+            assertTrue( e.getCause() instanceof IllegalArgumentException );
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void usagePostRequestWhenPassedEmptyAppParam_ShouldThrowIllegalArgumentException() throws Throwable
+    {
+        try
+        {
+            // Act
+            mockMVC.perform(post("/usage")
+                    .param("app", "")
+                    .param("user", "horatio")
+                    .param("action", "get usage"));
+        }
+        catch(NestedServletException e)
+        {
+            // Assert
+            verify(userServiceMock, never()).saveUsage("", "horatio", "get usage");
+            assertNotNull( e );
+            assertNotNull( e.getCause() );
+            assertTrue( e.getCause() instanceof IllegalArgumentException );
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void usagePostRequestWhenPassedInvalidUserParam_ShouldThrowIllegalArgumentException() throws Throwable
+    {
+        try
+        {
+            // Act
+            mockMVC.perform(post("/usage")
+                    .param("app", "user app")
+                    .param("user", null)
+                    .param("action", "get usage"));
+        }
+        catch(NestedServletException e)
+        {
+            // Assert
+            verify(userServiceMock, never()).saveUsage("user app", null, "get usage");
+            assertNotNull( e );
+            assertNotNull( e.getCause() );
+            assertTrue( e.getCause() instanceof IllegalArgumentException );
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void usagePostRequestWhenPassedEmptyUserParam_ShouldThrowIllegalArgumentException() throws Throwable
+    {
+        try
+        {
+            // Act
+            mockMVC.perform(post("/usage")
+                    .param("app", "user app")
+                    .param("user", "")
+                    .param("action", "get usage"));
+        }
+        catch(NestedServletException e)
+        {
+            // Assert
+            verify(userServiceMock, never()).saveUsage("user app", "", "get usage");
+            assertNotNull( e );
+            assertNotNull( e.getCause() );
+            assertTrue( e.getCause() instanceof IllegalArgumentException );
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void usagePostRequestWhenPassedEmptyActionParam_ShouldThrowIllegalArgumentException() throws Throwable
+    {
+        try
+        {
+            // Act
+            mockMVC.perform(post("/usage")
+                    .param("app", "user app")
+                    .param("user", "horatio")
+                    .param("action", ""));
+        }
+        catch(NestedServletException e)
+        {
+            // Assert
+            verify(userServiceMock, never()).saveUsage("user app", "horatio", "");
+            assertNotNull( e );
+            assertNotNull( e.getCause() );
+            assertTrue( e.getCause() instanceof IllegalArgumentException );
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void usagePostRequestWhenPassedInvalidActionParam_ShouldThrowIllegalArgumentException() throws Throwable
+    {
+        try
+        {
+            // Act
+            mockMVC.perform(post("/usage")
+                    .param("app", "user app")
+                    .param("user", "harper")
+                    .param("action", null));
+        }
+        catch(NestedServletException e)
+        {
+            // Assert
+            verify(userServiceMock, never()).saveUsage("user app", "harper", null);
+            assertNotNull( e );
+            assertNotNull( e.getCause() );
+            assertTrue( e.getCause() instanceof IllegalArgumentException );
+            throw e.getCause();
+        }
+    }
 }

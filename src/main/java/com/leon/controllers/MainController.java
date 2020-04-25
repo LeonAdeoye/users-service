@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Optional;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class MainController
@@ -29,7 +29,7 @@ public class MainController
     }
 
     @CrossOrigin
-    @RequestMapping(value="/usage", method=RequestMethod.POST)
+    @RequestMapping(value="/usage", method={POST})
     public void saveUsage(@RequestParam String app,@RequestParam String user, @RequestParam String action)
     {
         if(app == null || app.isEmpty())
