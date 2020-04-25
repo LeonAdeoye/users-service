@@ -1,6 +1,8 @@
 package com.leon.services;
 
 import com.leon.models.Usage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -8,14 +10,16 @@ import com.leon.repositories.UsageRepository;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class UserServiceImpl implements UserService
 {
-    private Map<String, List<Usage>> usageMap = new HashMap<>();
+    private Map<String, List<Usage>> usageMap = new ConcurrentHashMap<>();
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     UsageRepository usageRepository;
@@ -28,9 +32,9 @@ public class UserServiceImpl implements UserService
     @PostConstruct
     public void initialize()
     {
-        usageMap = usageRepository.findAll(sortByIdAsc())
-            .stream()
-            .collect(groupingBy(Usage::getApp));
+        List<Usage> list = usageRepository.findAll(sortByIdAsc());
+        logger.info("Loaded {} usages from persistence store during initialization.", list.size());
+        usageMap = list.stream().collect(groupingBy(Usage::getApp));
     }
 
     public int getCurrentMonthIndex()
@@ -64,6 +68,7 @@ public class UserServiceImpl implements UserService
                 existingUsage.setMonthlyCount(monthlyCounts);
                 existingUsage.setLastUsageDate(LocalDate.now());
                 usageRepository.save(existingUsage);
+                logger.info("Successfully saved usage {} in persistence store.", existingUsage);
                 return;
             }
         }
@@ -71,15 +76,21 @@ public class UserServiceImpl implements UserService
         newUsage.setMonthlyCount(createMonthlyCount(currentMonthIndex, 1));
         appUsageList.add(newUsage);
         usageMap.put(newUsage.getApp(), appUsageList);
-        usageRepository.save(newUsage);
+        newUsage = usageRepository.save(newUsage);
+        logger.info("Successfully saved usage {} in persistence store.", newUsage);
     }
 
     @Override
     public List<Usage> getUsage(String app, Optional<String> user)
     {
+        List<Usage> result;
+
         if(user.isPresent())
-            return usageMap.get(app).stream().filter(usage -> usage.getUser().equals(user.get())).collect(Collectors.toList());
+            result = usageMap.get(app).stream().filter(usage -> usage.getUser().equals(user.get())).collect(Collectors.toList());
         else
-            return usageMap.get(app);
+            result = usageMap.get(app);
+
+        logger.info("Successfully retrieved {} usages from usage map.", result.size());
+        return result;
     }
 }
