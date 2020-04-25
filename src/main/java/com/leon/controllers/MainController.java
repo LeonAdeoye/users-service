@@ -1,11 +1,14 @@
 package com.leon.controllers;
 
+import com.leon.models.Usage;
 import com.leon.services.ConfigurationService;
 import com.leon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 import java.util.Optional;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -50,13 +53,13 @@ public class MainController
             throw new IllegalArgumentException("action argument is invalid");
         }
 
-        logger.info("Received request to persist usage data point for app: {}, and user: {}", app, user);
-        this.userService.saveUsage(app, user, action);
+        logger.info("Received request to persist usage data point for app: '{}', and user: '{}', and action: '{}'", app, user, action);
+        this.userService.saveUsage(new Usage(app, user, action));
     }
 
     @CrossOrigin
     @RequestMapping(value="/usage", method=RequestMethod.GET)
-    public void getUsage(@RequestParam String app, @RequestParam Optional<String> user)
+    public List<Usage> getUsage(@RequestParam String app, @RequestParam Optional<String> user)
     {
         if(app == null || app.isEmpty())
         {
@@ -70,7 +73,7 @@ public class MainController
             throw new IllegalArgumentException("user argument is empty");
         }
 
-        logger.info("Received request to retrieve app usage data for app: {} and user: {}", app, user.get());
-        this.userService.getUsage(app, user);
+        logger.info("Received request to retrieve usage data for app: '{}' and user: '{}'", app, (user.isPresent() ? user.get() : "empty"));
+        return this.userService.getUsage(app, user);
     }
 }

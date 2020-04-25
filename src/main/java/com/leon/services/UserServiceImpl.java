@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService
     @PostConstruct
     public void initialize()
     {
-        usageMap = usageRepository.findAll(new Sort(Sort.Direction.ASC, "app"))
+        usageMap = usageRepository.findAll(sortByIdAsc())
             .stream()
             .collect(groupingBy(Usage::getApp));
     }
@@ -39,34 +39,35 @@ public class UserServiceImpl implements UserService
         return calendar.get(Calendar.MONTH);
     }
 
-    private List<OptionalInt> createMonthlyCount(int monthIndex, int count)
+    private List<Integer> createMonthlyCount(int monthIndex, int count)
     {
-        List <OptionalInt> monthlyCount = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
-        monthlyCount.set(monthIndex, OptionalInt.of(count));
+        List <Integer> monthlyCount = new ArrayList<>(Collections.nCopies(12, 0));
+        monthlyCount.set(monthIndex, count);
         return monthlyCount;
     }
 
     @Override
-    synchronized public void saveUsage(String app, String user, String action)
+    synchronized public void saveUsage(Usage newUsage)
     {
-        List<Usage> appUsageList = usageMap.containsKey(app) ? usageMap.get(app) : new ArrayList<>();
+        List<Usage> appUsageList = usageMap.containsKey(newUsage.getApp()) ? usageMap.get(newUsage.getApp()) : new ArrayList<>();
         int currentMonthIndex = getCurrentMonthIndex();
 
         for(int index = 0; index < appUsageList.size(); ++index)
         {
-            if(appUsageList.get(index).getUser().equalsIgnoreCase(user) && appUsageList.get(index).getAction().equalsIgnoreCase(action))
+            if(appUsageList.get(index).getUser().equalsIgnoreCase(newUsage.getUser()) && appUsageList.get(index).getAction().equalsIgnoreCase(newUsage.getAction()))
             {
-                List<OptionalInt> monthlyCounts = appUsageList.get(index).getMonthlyCount();
-                int currentMonthCount = monthlyCounts.get(currentMonthIndex).orElse(0);
-                monthlyCounts.set(currentMonthIndex, OptionalInt.of(++currentMonthCount));
-                usageRepository.save( new Usage(app, user, action, monthlyCounts));
+                List<Integer> monthlyCounts = appUsageList.get(index).getMonthlyCount();
+                int currentMonthCount = monthlyCounts.get(currentMonthIndex);
+                monthlyCounts.set(currentMonthIndex, ++currentMonthCount);
+                newUsage.setMonthlyCount(monthlyCounts);
+                usageRepository.save(newUsage);
                 return;
             }
         }
 
-        Usage newUsage = new Usage(app, user, action, createMonthlyCount(currentMonthIndex, 1));
+        newUsage.setMonthlyCount(createMonthlyCount(currentMonthIndex, 1));
         appUsageList.add(newUsage);
-        usageMap.put(app, appUsageList);
+        usageMap.put(newUsage.getApp(), appUsageList);
         usageRepository.save(newUsage);
     }
 
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService
     public List<Usage> getUsage(String app, Optional<String> user)
     {
         if(user.isPresent())
-            return usageMap.get(app).stream().filter(usage -> usage.getUser() == user.get()).collect(Collectors.toList());
+            return usageMap.get(app).stream().filter(usage -> usage.getUser().equals(user.get())).collect(Collectors.toList());
         else
             return usageMap.get(app);
     }

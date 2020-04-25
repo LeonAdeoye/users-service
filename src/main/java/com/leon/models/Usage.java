@@ -17,21 +17,19 @@ public class Usage
     private String user;
     private String action;
     private LocalDate lastUsageDate;
-    private List<OptionalInt> monthlyCount;
+    private List<Integer> monthlyCount;
 
     public Usage()
     {
-        this.id = "";
         this.app = "";
         this.user = "";
         this.action = "";
         this.lastUsageDate = LocalDate.now();
-        this.monthlyCount = new ArrayList<>(Collections.nCopies(12, OptionalInt.of(0)));
+        this.monthlyCount = new ArrayList<>(Collections.nCopies(12, 0));
     }
 
-    public Usage(String app, String user, String action, List<OptionalInt> monthlyCount)
+    public Usage(String app, String user, String action, List<Integer> monthlyCount)
     {
-        this.id = "";
         this.app = app;
         this.user = user;
         this.action = action;
@@ -39,7 +37,7 @@ public class Usage
         this.monthlyCount = new ArrayList<>(monthlyCount);
     }
 
-    public Usage(String id, String app, String user, String action, List<OptionalInt> monthlyCount)
+    public Usage(String id, String app, String user, String action, List<Integer> monthlyCount)
     {
         this.id = id;
         this.app = app;
@@ -47,6 +45,15 @@ public class Usage
         this.action = action;
         this.lastUsageDate = LocalDate.now();
         this.monthlyCount = new ArrayList<>(monthlyCount);
+    }
+
+    public Usage(String app, String user, String action)
+    {
+        this.app = app;
+        this.user = user;
+        this.action = action;
+        this.lastUsageDate = LocalDate.now();
+        this.monthlyCount = new ArrayList<>(Collections.nCopies(12,0));
     }
 
     public String getId()
@@ -89,12 +96,12 @@ public class Usage
         this.action = action;
     }
 
-    public List<OptionalInt> getMonthlyCount()
+    public List<Integer> getMonthlyCount()
     {
         return this.monthlyCount;
     }
 
-    public void setMonthlyCount(List<OptionalInt> monthlyCount)
+    public void setMonthlyCount(List<Integer> monthlyCount)
     {
         this.monthlyCount = monthlyCount;
     }
@@ -110,30 +117,30 @@ public class Usage
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Usage usage = (Usage) o;
-        return this.id.equals(usage.id) &&
-                this.app.equals(usage.app) &&
-                this.lastUsageDate.equals(usage.lastUsageDate) &&
-                this.user.equals(usage.user) &&
-                this.action.equals(usage.action) &&
-                this.monthlyCount.equals(usage.monthlyCount);
+        return Objects.equals(getId(), usage.getId()) &&
+                getApp().equals(usage.getApp()) &&
+                getUser().equals(usage.getUser()) &&
+                getAction().equals(usage.getAction()) &&
+                getLastUsageDate().equals(usage.getLastUsageDate()) &&
+                getMonthlyCount().equals(usage.getMonthlyCount());
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(this.id, this.app, this.user, this.action, this.monthlyCount, this.lastUsageDate);
+        return Objects.hash(this.getId(), this.getApp(), this.getUser(), this.getAction(), this.getMonthlyCount(), this.getLastUsageDate());
     }
 
     @Override
     public String toString()
     {
         return "Usage{" +
-                "id='" + this.id + '\'' +
-                ", app='" + this.app + '\'' +
-                ", user='" + this.user + '\'' +
-                ", action='" + this.action + '\'' +
-                ", lastUsageDate='" + this.lastUsageDate + '\'' +
-                ", monthlyCount=" + this.monthlyCount +
+                "id='" + this.getId() + '\'' +
+                ", app='" + this.getApp() + '\'' +
+                ", user='" + this.getUser() + '\'' +
+                ", action='" + this.getAction() + '\'' +
+                ", lastUsageDate='" + this.getLastUsageDate() + '\'' +
+                ", monthlyCount=" + this.getMonthlyCount() +
                 '}';
     }
 }
