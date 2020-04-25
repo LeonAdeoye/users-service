@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.leon.repositories.UsageRepository;
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService
                 int currentMonthCount = monthlyCounts.get(currentMonthIndex);
                 monthlyCounts.set(currentMonthIndex, ++currentMonthCount);
                 existingUsage.setMonthlyCount(monthlyCounts);
+                existingUsage.setLastUsageDate(LocalDate.now());
                 usageRepository.save(existingUsage);
                 return;
             }

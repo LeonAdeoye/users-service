@@ -111,6 +111,11 @@ public class Usage
         return this.lastUsageDate;
     }
 
+    public void setLastUsageDate(LocalDate lastUsageDate)
+    {
+         this.lastUsageDate = lastUsageDate;
+    }
+
     @Override
     public boolean equals(Object o)
     {
