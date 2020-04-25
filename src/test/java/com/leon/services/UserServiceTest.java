@@ -86,7 +86,7 @@ public class UserServiceTest
         userService.initialize();
         List<Integer> monthlyCounts = new ArrayList<>(Collections.nCopies(12, 10));
         monthlyCounts.set(userService.getCurrentMonthIndex(), 11);
-        Usage usage = new Usage("3","users app", "horatio", "get configuration", monthlyCounts);
+        Usage usage = new Usage("1","users app", "horatio", "get configuration", monthlyCounts);
         // Act
         userService.saveUsage(usage);
         // Assert

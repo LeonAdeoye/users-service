@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService
                 existingUsage.setMonthlyCount(monthlyCounts);
                 existingUsage.setLastUsageDate(LocalDate.now());
                 usageRepository.save(existingUsage);
-                logger.info("Successfully saved usage {} in persistence store.", existingUsage);
+                logger.info("Successfully saved existing usage {} in persistence store.", existingUsage);
                 return;
             }
         }
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService
         appUsageList.add(newUsage);
         usageMap.put(newUsage.getApp(), appUsageList);
         newUsage = usageRepository.save(newUsage);
-        logger.info("Successfully saved usage {} in persistence store.", newUsage);
+        logger.info("Successfully saved new usage {} in persistence store.", newUsage);
     }
 
     @Override
