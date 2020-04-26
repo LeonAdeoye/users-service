@@ -1,4 +1,4 @@
-<configuration scan="true" scanPeriod="300 seconds" >
+<configuration scan="true" scanPeriod="30 seconds" >
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>../logs/users-service.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -12,10 +12,11 @@
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.leon" level="INFO" />
+    <logger name="com.leon.controllers" level="INFO" />
+    <logger name="com.leon.services" level="INFO" />
     <root level="INFO">
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
