@@ -4,10 +4,10 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>../logs/users-service.log.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>8</maxHistory>
-            <totalSizeCap>3GB</totalSizeCap>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -17,7 +17,7 @@
     </appender>
     <logger name="com.leon.controllers" level="INFO" />
     <logger name="com.leon.services" level="INFO" />
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
     </root>

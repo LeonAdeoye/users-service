@@ -3,7 +3,7 @@ package com.leon.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leon.models.Usage;
 import com.leon.services.ConfigurationService;
-import com.leon.services.UserService;
+import com.leon.services.UsageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,7 +35,7 @@ public class MainControllerTest
     private ConfigurationService configurationServiceMock;
 
     @MockBean
-    private UserService userServiceMock;
+    private UsageService usageServiceMock;
 
     private static String asJsonString(final Object obj)
     {
@@ -58,7 +58,7 @@ public class MainControllerTest
                 .param("user", "horatio"))
                 .andExpect(status().isOk());
         // Assert
-        verify(userServiceMock, times(1)).getUsage("users app", Optional.of("horatio"));
+        verify(usageServiceMock, times(1)).getUsage("users app", Optional.of("horatio"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -74,7 +74,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).getUsage("", Optional.of("horatio"));
+            verify(usageServiceMock, never()).getUsage("", Optional.of("horatio"));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -95,7 +95,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).getUsage("users app", Optional.of(""));
+            verify(usageServiceMock, never()).getUsage("users app", Optional.of(""));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -118,7 +118,7 @@ public class MainControllerTest
         // Act
         mockMVC.perform(get("/reconfigure"));
         // Assert
-        verify(userServiceMock, times(1)).initialize();
+        verify(usageServiceMock, times(1)).initialize();
     }
 
     @Test
@@ -131,7 +131,7 @@ public class MainControllerTest
                 .param("action", "get usage"))
                 .andExpect(status().isOk());
         // Assert
-        verify(userServiceMock, times(1)).saveUsage(new Usage("users app", "horatio", "get usage"));
+        verify(usageServiceMock, times(1)).saveUsage(new Usage("users app", "horatio", "get usage"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -148,7 +148,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).saveUsage(new Usage(null, "horatio", "get usage"));
+            verify(usageServiceMock, never()).saveUsage(new Usage(null, "horatio", "get usage"));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -170,7 +170,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).saveUsage(new Usage("", "horatio", "get usage"));
+            verify(usageServiceMock, never()).saveUsage(new Usage("", "horatio", "get usage"));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -192,7 +192,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).saveUsage(new Usage("user app", null, "get usage"));
+            verify(usageServiceMock, never()).saveUsage(new Usage("user app", null, "get usage"));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -214,7 +214,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).saveUsage(new Usage("user app", "", "get usage"));
+            verify(usageServiceMock, never()).saveUsage(new Usage("user app", "", "get usage"));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -236,7 +236,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).saveUsage(new Usage("user app", "horatio", ""));
+            verify(usageServiceMock, never()).saveUsage(new Usage("user app", "horatio", ""));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -258,7 +258,7 @@ public class MainControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(userServiceMock, never()).saveUsage(new Usage("user app", "harper", null));
+            verify(usageServiceMock, never()).saveUsage(new Usage("user app", "harper", null));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );

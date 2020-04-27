@@ -5,7 +5,7 @@ import com.leon.models.Usage;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserService
+public interface UsageService
 {
     void initialize();
     int getCurrentMonthIndex();

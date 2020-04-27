@@ -16,23 +16,23 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserServiceTest
+public class UsageServiceTest
 {
     @MockBean
     private UsageRepository userRepositoryMock;
 
     @Autowired
-    private UserService userService;
+    private UsageService usageService;
 
     @Test
     public void whenPassedValidUsage_saveUsage_shouldCallSaveMethodInRepositoryMock()
     {
         // Arrange
         List<Integer> monthlyCounts = new ArrayList<>(Collections.nCopies(12, 0));
-        monthlyCounts.set(userService.getCurrentMonthIndex(), 1);
+        monthlyCounts.set(usageService.getCurrentMonthIndex(), 1);
         Usage usage = new Usage("1","users app", "horatio", "get configurations", monthlyCounts);
         // Act
-        userService.saveUsage(usage);
+        usageService.saveUsage(usage);
         // Assert
         verify(userRepositoryMock, times(1)).save(usage);
     }
@@ -46,12 +46,12 @@ public class UserServiceTest
                 new Usage("2","users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 1))));
 
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
-        userService.initialize();
+        usageService.initialize();
         List<Integer> monthlyCounts = new ArrayList<>(Collections.nCopies(12, 0));
-        monthlyCounts.set(userService.getCurrentMonthIndex(), 1);
+        monthlyCounts.set(usageService.getCurrentMonthIndex(), 1);
         Usage usage = new Usage("3","users app", "saori", "get configuration", monthlyCounts);
         // Act
-        userService.saveUsage(usage);
+        usageService.saveUsage(usage);
         // Assert
         verify(userRepositoryMock, times(1)).save(usage);
     }
@@ -65,12 +65,12 @@ public class UserServiceTest
                 new Usage("2","users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 1))));
 
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
-        userService.initialize();
+        usageService.initialize();
         List<Integer> monthlyCounts = new ArrayList<>(Collections.nCopies(12, 0));
-        monthlyCounts.set(userService.getCurrentMonthIndex(), 1);
+        monthlyCounts.set(usageService.getCurrentMonthIndex(), 1);
         Usage usage = new Usage("3","config app", "saori", "get configuration", monthlyCounts);
         // Act
-        userService.saveUsage(usage);
+        usageService.saveUsage(usage);
         // Assert
         verify(userRepositoryMock, times(1)).save(usage);
     }
@@ -83,12 +83,12 @@ public class UserServiceTest
                 new Usage("1","users app", "horatio", "get configuration", new ArrayList<>(Collections.nCopies(12, 10))),
                 new Usage("2","users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 1))));
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
-        userService.initialize();
+        usageService.initialize();
         List<Integer> monthlyCounts = new ArrayList<>(Collections.nCopies(12, 10));
-        monthlyCounts.set(userService.getCurrentMonthIndex(), 11);
+        monthlyCounts.set(usageService.getCurrentMonthIndex(), 11);
         Usage usage = new Usage("1","users app", "horatio", "get configuration", monthlyCounts);
         // Act
-        userService.saveUsage(usage);
+        usageService.saveUsage(usage);
         // Assert
         verify(userRepositoryMock, times(1)).save(usage);
     }
@@ -102,9 +102,9 @@ public class UserServiceTest
                 new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 20))),
                 new Usage("config app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 30))));
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
-        userService.initialize();
+        usageService.initialize();
         // Act
-        List<Usage> result = userService.getUsage("users app", Optional.of("horatio"));
+        List<Usage> result = usageService.getUsage("users app", Optional.of("horatio"));
         // Assert
         assertEquals("should return only 1 usage in list", result.size(), 1);
     }
@@ -118,9 +118,9 @@ public class UserServiceTest
                 new Usage("users app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 20))),
                 new Usage("config app", "harper", "get configuration", new ArrayList<>(Collections.nCopies(12, 30))));
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
-        userService.initialize();
+        usageService.initialize();
         // Act
-        List<Usage> result = userService.getUsage("users app", Optional.empty());
+        List<Usage> result = usageService.getUsage("users app", Optional.empty());
         // Assert
         assertEquals("should return only 2 usages in list", result.size(), 2);
     }

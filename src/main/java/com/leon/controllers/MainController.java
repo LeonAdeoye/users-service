@@ -2,7 +2,7 @@ package com.leon.controllers;
 
 import com.leon.models.Usage;
 import com.leon.services.ConfigurationService;
-import com.leon.services.UserService;
+import com.leon.services.UsageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class MainController
     @Autowired
     private ConfigurationService configurationService;
     @Autowired
-    private UserService userService;
+    private UsageService usageService;
 
     @CrossOrigin
     @RequestMapping("/reconfigure")
@@ -29,7 +29,7 @@ public class MainController
     {
         logger.info("Received request to reconfigure.");
         this.configurationService.reconfigure();
-        this.userService.initialize();
+        this.usageService.initialize();
     }
 
     @CrossOrigin
@@ -55,7 +55,7 @@ public class MainController
         }
 
         logger.info("Received request to persist usage data point for app: '{}', and user: '{}', and action: '{}'", app, user, action);
-        this.userService.saveUsage(new Usage(app, user, action));
+        this.usageService.saveUsage(new Usage(app, user, action));
     }
 
     @CrossOrigin
@@ -75,6 +75,6 @@ public class MainController
         }
 
         logger.info("Received request to retrieve usage data for app: '{}' and user: '{}'", app, (user.isPresent() ? user.get() : "empty"));
-        return this.userService.getUsage(app, user);
+        return this.usageService.getUsage(app, user);
     }
 }

@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
 
 @Service
-public class UserServiceImpl implements UserService
+public class UsageServiceImpl implements UsageService
 {
     private Map<String, List<Usage>> usageMap = new ConcurrentHashMap<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UsageServiceImpl.class);
 
     @Autowired
     UsageRepository usageRepository;
