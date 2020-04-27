@@ -13,7 +13,6 @@ enum RegionEnum
     AMERICA
 }
 
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Document("User")
 public final class User

@@ -8,4 +8,5 @@ public interface UserService
     List<User> getAllUsers();
     List<User> getDeskUsers(String desk);
     User getUser(String userId);
+    void initialize();
 }
