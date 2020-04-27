@@ -104,24 +104,6 @@ public class UsageControllerTest
     }
 
     @Test
-    public void reconfigureGetRequest_shouldCallConfigurationServiceReconfigureMethod() throws Exception
-    {
-        // Act
-        mockMVC.perform(get("/reconfigure"));
-        // Assert
-        verify(configurationServiceMock, times(1)).reconfigure();
-    }
-
-    @Test
-    public void reconfigureGetRequest_shouldCallUserServiceInitializeMethod() throws Exception
-    {
-        // Act
-        mockMVC.perform(get("/reconfigure"));
-        // Assert
-        verify(usageServiceMock, times(1)).initialize();
-    }
-
-    @Test
     public void usagePostRequestWhenPassedValidRequestBody_ShouldCallUserServiceSaveUsageMethod() throws Exception
     {
         // Act

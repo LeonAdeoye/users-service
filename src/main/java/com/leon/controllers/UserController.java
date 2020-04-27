@@ -12,6 +12,7 @@ import java.util.List;
 
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 
 @RestController
@@ -33,7 +34,7 @@ public class UserController
             throw new IllegalArgumentException("desk name argument is invalid");
         }
 
-        logger.info("Received request to persist usage data point for app: '{}', and user: '{}', and action: '{}'", deskName);
+        logger.info("Received request to retrieve a list of users belonging to a desk: '{}'", deskName);
         return this.userService.getDeskUsers(deskName);
     }
 
@@ -48,7 +49,21 @@ public class UserController
             throw new IllegalArgumentException("userId argument is invalid");
         }
 
-        logger.info("Received request to retrieve usage data for app: '{}' and user: '{}'", userId);
+        logger.info("Received request to retrieve user details using the user id: '{}'", userId);
         return this.userService.getUser(userId);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value="/user", method={POST})
+    public void saveUser(@RequestBody User user)
+    {
+        if(user == null)
+        {
+            logger.error("The user argument cannot be null.");
+            throw new NullPointerException("user argument is null");
+        }
+
+        logger.info("Received request to persist user: '{}', and user: '{}', and action: '{}'", user);
+        this.userService.saveUser(user);
     }
 }

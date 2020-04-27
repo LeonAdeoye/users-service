@@ -9,4 +9,5 @@ public interface UserService
     List<User> getDeskUsers(String desk);
     User getUser(String userId);
     void initialize();
+    void saveUser(User user);
 }

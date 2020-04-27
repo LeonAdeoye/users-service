@@ -32,6 +32,7 @@ public class MainController
         this.userService.initialize();
     }
 
+    @CrossOrigin
     @RequestMapping("/heartbeat")
     public String heartBeat()
     {
