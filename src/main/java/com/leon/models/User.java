@@ -3,19 +3,11 @@ package com.leon.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.Objects;
-
-enum RegionEnum
-{
-    ASIA,
-    EMEA,
-    AMERICA
-}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Document("User")
-public final class User
+public class User
 {
     @Id
     private String id;
@@ -23,11 +15,23 @@ public final class User
     private String fullName;
     private boolean isActive;
     private String deskName;
-    private RegionEnum region;
+    private EnumTypes.RegionEnum region;
     private String countryCode;
     private String location;
 
-    public User(String id, String userId, String fullName, boolean isActive, String deskName, RegionEnum region, String countryCode, String location)
+    public User()
+    {
+        this.id = "";
+        this.userId = "";
+        this.fullName = "";
+        this.isActive = false;
+        this.deskName = "";
+        this.region = EnumTypes.RegionEnum.NONE;
+        this.countryCode = "";
+        this.location = "";
+    }
+
+    public User(String id, String userId, String fullName, boolean isActive, String deskName, EnumTypes.RegionEnum region, String countryCode, String location)
     {
         this.id = id;
         this.userId = userId;
@@ -39,7 +43,7 @@ public final class User
         this.location = location;
     }
 
-    public User(String userId, String fullName, boolean isActive, String deskName, RegionEnum region, String countryCode, String location)
+    public User(String userId, String fullName, boolean isActive, String deskName, EnumTypes.RegionEnum region, String countryCode, String location)
     {
         this.userId = userId;
         this.fullName = fullName;
@@ -100,12 +104,12 @@ public final class User
         this.deskName = deskName;
     }
 
-    public RegionEnum getRegion()
+    public EnumTypes.RegionEnum getRegion()
     {
         return region;
     }
 
-    public void setRegion(RegionEnum region)
+    public void setRegion(EnumTypes.RegionEnum region)
     {
         this.region = region;
     }

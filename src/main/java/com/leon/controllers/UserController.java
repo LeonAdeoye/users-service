@@ -7,12 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import java.util.Optional;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 
 @RestController
@@ -24,24 +21,28 @@ public class UserController
     private UserService userService;
 
     @CrossOrigin
-    @RequestMapping(value="/users", method={GET})
+    @RequestMapping(value="/users", method=RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<User> getUsers(@RequestParam String deskName)
+    public List<User> getUsers(@RequestParam(required = false) final Optional<String> deskName)
     {
-        if(deskName == null || deskName.isEmpty())
+        if(deskName.isPresent() && deskName.get().trim().isEmpty())
         {
-            logger.error("The desk name argument cannot be null or empty.");
-            throw new IllegalArgumentException("desk name argument is invalid");
+            logger.error("The desk name argument cannot be empty.");
+            throw new IllegalArgumentException("desk name argument is invalid.");
         }
 
-        logger.info("Received request to retrieve a list of users belonging to a desk: '{}'", deskName);
-        return this.userService.getDeskUsers(deskName);
+        logger.info("Received request to retrieve a list of users" + (deskName.isPresent() ? " belonging to a desk: '" + deskName.get() + "'." : " for all desks."));
+
+        if(deskName.isPresent())
+            return this.userService.getDeskUsers(deskName.get());
+        else
+            return this.userService.getAllUsers();
     }
 
     @CrossOrigin
-    @RequestMapping(value="/user", method= GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/user", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public User getUser(@RequestParam String userId)
+    public User getUser(@RequestParam final String userId)
     {
         if(userId == null || userId.isEmpty())
         {
@@ -54,8 +55,8 @@ public class UserController
     }
 
     @CrossOrigin
-    @RequestMapping(value="/user", method={POST})
-    public void saveUser(@RequestBody User user)
+    @RequestMapping(value="/user", method={PUT, POST}, consumes=MediaType.APPLICATION_JSON_VALUE)
+    public void saveUser(@RequestBody final User user)
     {
         if(user == null)
         {

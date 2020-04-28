@@ -21,21 +21,21 @@ public class UsageController
 
     @CrossOrigin
     @RequestMapping(value="/usage", method={POST})
-    public void saveUsage(@RequestParam String app,@RequestParam String user, @RequestParam String action)
+    public void saveUsage(@RequestParam final String app,@RequestParam final String user, @RequestParam final String action)
     {
-        if(app == null || app.isEmpty())
+        if(app == null || app.trim().isEmpty())
         {
             logger.error("The app argument cannot be null or empty.");
             throw new IllegalArgumentException("app argument is invalid");
         }
 
-        if(user == null || user.isEmpty())
+        if(user == null || user.trim().isEmpty())
         {
             logger.error("The user argument cannot be null or empty.");
             throw new IllegalArgumentException("user argument is invalid");
         }
 
-        if(action == null || action.isEmpty())
+        if(action == null || action.trim().isEmpty())
         {
             logger.error("The action argument cannot be null or empty.");
             throw new IllegalArgumentException("action argument is invalid");
@@ -47,15 +47,15 @@ public class UsageController
 
     @CrossOrigin
     @RequestMapping(value="/usage", method=RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
-    public List<Usage> getUsage(@RequestParam String app, @RequestParam Optional<String> user)
+    public List<Usage> getUsage(@RequestParam final String app, @RequestParam(required=false) final Optional<String> user)
     {
-        if(app == null || app.isEmpty())
+        if(app == null || app.trim().isEmpty())
         {
             logger.error("The app argument cannot be null or empty.");
             throw new IllegalArgumentException("app argument is invalid");
         }
 
-        if(user.isPresent() && user.get() == "")
+        if(user.isPresent() && user.get().trim().isEmpty())
         {
             logger.error("The user argument cannot be empty.");
             throw new IllegalArgumentException("user argument is empty");
