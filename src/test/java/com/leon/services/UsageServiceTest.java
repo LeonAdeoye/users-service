@@ -107,6 +107,8 @@ public class UsageServiceTest
         List<Usage> result = usageService.getUsage("users app", Optional.of("horatio"));
         // Assert
         assertEquals("should return only 1 usage in list", result.size(), 1);
+        assertEquals("should return user's app usage", result.get(0).getApp(), "users app");
+        assertEquals("should return user's app horatio usage", result.get(0).getUser(), "horatio");
     }
 
     @Test
@@ -123,5 +125,9 @@ public class UsageServiceTest
         List<Usage> result = usageService.getUsage("users app", Optional.empty());
         // Assert
         assertEquals("should return only 2 usages in list", result.size(), 2);
+        assertEquals("should return user's app usage", result.get(0).getApp(), "users app");
+        assertEquals("should return user's app usage", result.get(1).getApp(), "users app");
+        assertEquals("should return user's app horatio usage", result.get(0).getUser(), "horatio");
+        assertEquals("should return user's app harper usage", result.get(1).getUser(), "harper");
     }
 }

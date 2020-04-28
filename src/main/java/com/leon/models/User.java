@@ -138,14 +138,14 @@ public class User
     public String toString()
     {
         return "User{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", isActive=" + isActive +
-                ", deskName='" + deskName + '\'' +
-                ", region=" + region +
-                ", countryCode='" + countryCode + '\'' +
-                ", location='" + location + '\'' +
+                "id='" + getId() + '\'' +
+                ", userId='" + getUserId() + '\'' +
+                ", fullName='" + getFullName() + '\'' +
+                ", isActive=" + isActive() +
+                ", deskName='" + getDeskName() + '\'' +
+                ", region=" + getRegion() +
+                ", countryCode='" + getCountryCode() + '\'' +
+                ", location='" + getLocation() + '\'' +
                 '}';
     }
 
