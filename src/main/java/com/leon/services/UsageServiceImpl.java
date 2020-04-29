@@ -24,7 +24,7 @@ public class UsageServiceImpl implements UsageService
     @Autowired
     UsageRepository usageRepository;
 
-    private Sort sortByIdAsc()
+    private Sort sortByAppNameAsc()
     {
         return new Sort(Sort.Direction.ASC, "app");
     }
@@ -32,9 +32,9 @@ public class UsageServiceImpl implements UsageService
     @PostConstruct
     public void initialize()
     {
-        List<Usage> list = usageRepository.findAll(sortByIdAsc());
-        logger.info("Loaded {} usages from persistence store during initialization.", list.size());
-        usageMap = list.stream().collect(groupingBy(Usage::getApp));
+        List<Usage> usages = usageRepository.findAll(sortByAppNameAsc());
+        logger.info("Loaded {} usages from persistence store during initialization.", usages.size());
+        usageMap = usages.stream().collect(groupingBy(Usage::getApp));
     }
 
     public int getCurrentMonthIndex()

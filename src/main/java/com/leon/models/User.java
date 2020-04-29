@@ -21,7 +21,6 @@ public class User
 
     public User()
     {
-        this.id = "";
         this.userId = "";
         this.fullName = "";
         this.isActive = false;
