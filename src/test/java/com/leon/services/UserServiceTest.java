@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.mockito.Mockito.*;
@@ -33,5 +34,14 @@ public class UserServiceTest
         userService.saveUser(user);
         // Assert
         verify(userRepositoryMock, times(1)).save(user);
+    }
+
+    @Test
+    public void initialize_shouldCallFindAllMethodInRepositoryMock()
+    {
+        // Act
+        userService.initialize();
+        // Assert
+        verify(userRepositoryMock, times(1)).findAll(new Sort(Sort.Direction.ASC, "deskName"));
     }
 }

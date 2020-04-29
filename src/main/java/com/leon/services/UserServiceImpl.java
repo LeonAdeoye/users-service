@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService
     @Override
     public List<User> getDeskUsers(String deskName)
     {
-        return users.stream().filter(user -> user.getDeskName().equals(deskName)).collect(toList());
+        return users.stream().filter(user -> user.getDeskName().equalsIgnoreCase(deskName)).collect(toList());
     }
 
     @Override
