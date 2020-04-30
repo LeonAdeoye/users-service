@@ -12,12 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.data.util.Pair.toMap;
 
 @Service
 public class UserServiceImpl implements UserService
@@ -37,7 +33,7 @@ public class UserServiceImpl implements UserService
     public void initialize()
     {
         usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(User::getUserId, user -> user));
-        logger.info("Loaded users from persistence store during initialization into map: ", usersMap);
+        logger.info("Loaded users from persistence store during initialization into map: {}", usersMap);
     }
 
     @Override
