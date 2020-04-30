@@ -10,53 +10,57 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.util.Pair.toMap;
 
 @Service
 public class UserServiceImpl implements UserService
 {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
-    private List<User> users = new ArrayList<>();
+    private Map<String,User> usersMap = new ConcurrentHashMap<>();
 
     @Autowired
     UserRepository userRepository;
 
-    private Sort sortByDeskNameAsc()
+    private Sort sortByUserIdAsc()
     {
-        return new Sort(Sort.Direction.ASC, "deskName");
+        return new Sort(Sort.Direction.ASC, "userId");
     }
 
     @PostConstruct
     public void initialize()
     {
-        users = userRepository.findAll(sortByDeskNameAsc());
-        logger.info("Loaded {} users from persistence store during initialization.", users.size());
+        usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(user -> user.getUserId(), user -> user));
+        logger.info("Loaded users from persistence store during initialization into map: ", usersMap);
     }
 
     @Override
     public void saveUser(User user)
     {
-        userRepository.save(user);
-        users = userRepository.findAll(sortByDeskNameAsc());
+        user = userRepository.save(user);
+        usersMap.put(user.getUserId(), user);
     }
 
     @Override
     public List<User> getAllUsers()
     {
-        return users;
+        return new ArrayList<>(usersMap.values());
     }
 
     @Override
     public List<User> getDeskUsers(String deskName)
     {
-        return users.stream().filter(user -> user.getDeskName().equalsIgnoreCase(deskName)).collect(toList());
+        return usersMap.values().stream().filter(user -> user.getDeskName().equalsIgnoreCase(deskName)).collect(toList());
     }
 
     @Override
     public User getUser(String userId)
     {
-        return users.stream().filter(user -> user.getUserId().equals(userId)).findFirst().orElse(null);
+        return usersMap.get(userId);
     }
 }

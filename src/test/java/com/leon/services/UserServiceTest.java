@@ -30,6 +30,7 @@ public class UserServiceTest
     {
         // Arrange
         User user = new User("1","horatio", "Ethan Horatio Adeoye", true, "sales trading", EnumTypes.RegionEnum.EUROPE, "UK", "Liverpool");
+        when(userRepositoryMock.save(user)).thenReturn(user);
         // Act
         userService.saveUser(user);
         // Assert
@@ -42,6 +43,6 @@ public class UserServiceTest
         // Act
         userService.initialize();
         // Assert
-        verify(userRepositoryMock, times(1)).findAll(new Sort(Sort.Direction.ASC, "deskName"));
+        verify(userRepositoryMock, times(1)).findAll(new Sort(Sort.Direction.ASC, "userId"));
     }
 }
