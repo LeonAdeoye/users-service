@@ -15,10 +15,13 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.leon.controllers" level="INFO"/>
-    <logger name="com.leon.services" level="INFO"/>
-    <root level="ERROR">
-        <appender-ref ref="FILE" />
+    <logger name="com.leon.controllers" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT" />
-    </root>
+    </logger>
+    <logger name="com.leon.services" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <root level="ERROR"/>
 </configuration>

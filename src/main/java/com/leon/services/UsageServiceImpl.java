@@ -91,7 +91,7 @@ public class UsageServiceImpl implements UsageService
         else
             result = usageMap.get(app);
 
-        logger.info("Successfully retrieved {} usages from usage map.", result.size());
+        logger.info("Successfully retrieved {} usages from usage map.", ((result != null) ? result.size() : 0));
         return result;
     }
 }
