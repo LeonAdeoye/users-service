@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService
     @PostConstruct
     public void initialize()
     {
-        usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(user -> user.getUserId(), user -> user));
+        usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(User::getUserId, user -> user));
         logger.info("Loaded users from persistence store during initialization into map: ", usersMap);
     }
 
