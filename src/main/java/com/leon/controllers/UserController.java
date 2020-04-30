@@ -55,8 +55,8 @@ public class UserController
     }
 
     @CrossOrigin
-    @RequestMapping(value="/user", method={PUT, POST}, consumes=MediaType.APPLICATION_JSON_VALUE)
-    public void saveUser(@RequestBody final User user)
+    @RequestMapping(value="/user", method={PUT, POST}, consumes=MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User saveUser(@RequestBody final User user)
     {
         if(user == null)
         {
@@ -64,7 +64,7 @@ public class UserController
             throw new NullPointerException("user argument is null");
         }
 
-        logger.info("Received request to persist user: '{}', and user: '{}', and action: '{}'", user);
-        this.userService.saveUser(user);
+        logger.info("Received request to persist user: ", user);
+        return this.userService.saveUser(user);
     }
 }

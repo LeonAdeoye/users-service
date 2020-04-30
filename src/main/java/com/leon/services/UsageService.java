@@ -9,6 +9,6 @@ public interface UsageService
 {
     void initialize();
     int getCurrentMonthIndex();
-    void saveUsage(Usage usage);
+    Usage saveUsage(Usage usage);
     List<Usage> getUsage(String app, Optional<String> user);
 }

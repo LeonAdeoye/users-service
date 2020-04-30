@@ -52,7 +52,7 @@ public class UsageServiceImpl implements UsageService
     }
 
     @Override
-    synchronized public void saveUsage(Usage newUsage)
+    synchronized public Usage saveUsage(Usage newUsage)
     {
         List<Usage> appUsageList = usageMap.containsKey(newUsage.getApp()) ? usageMap.get(newUsage.getApp()) : new ArrayList<>();
         int currentMonthIndex = getCurrentMonthIndex();
@@ -67,9 +67,9 @@ public class UsageServiceImpl implements UsageService
                 monthlyCounts.set(currentMonthIndex, ++currentMonthCount);
                 existingUsage.setMonthlyCount(monthlyCounts);
                 existingUsage.setLastUsageDate(LocalDate.now());
-                usageRepository.save(existingUsage);
+                existingUsage = usageRepository.save(existingUsage);
                 logger.info("Successfully saved existing usage {} in persistence store.", existingUsage);
-                return;
+                return existingUsage;
             }
         }
 
@@ -78,6 +78,7 @@ public class UsageServiceImpl implements UsageService
         usageMap.put(newUsage.getApp(), appUsageList);
         newUsage = usageRepository.save(newUsage);
         logger.info("Successfully saved new usage {} in persistence store.", newUsage);
+        return newUsage;
     }
 
     @Override

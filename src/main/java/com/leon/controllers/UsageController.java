@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 public class UsageController
@@ -20,8 +20,8 @@ public class UsageController
     private UsageService usageService;
 
     @CrossOrigin
-    @RequestMapping(value="/usage", method={POST})
-    public void saveUsage(@RequestParam final String app,@RequestParam final String user, @RequestParam final String action)
+    @RequestMapping(value="/usage", method={POST,PUT}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Usage saveUsage(@RequestParam final String app,@RequestParam final String user, @RequestParam final String action)
     {
         if(app == null || app.trim().isEmpty())
         {
@@ -42,7 +42,7 @@ public class UsageController
         }
 
         logger.info("Received request to persist usage data point for app: '{}', and user: '{}', and action: '{}'", app, user, action);
-        this.usageService.saveUsage(new Usage(app, user, action));
+        return this.usageService.saveUsage(new Usage(app, user, action));
     }
 
     @CrossOrigin
