@@ -94,4 +94,10 @@ public class UsageServiceImpl implements UsageService
         logger.info("Successfully retrieved {} usages from usage map.", ((result != null) ? result.size() : 0));
         return result;
     }
+
+    @Override
+    public Set<String> getUsageApps()
+    {
+        return this.usageMap.keySet();
+    }
 }

@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
@@ -63,5 +65,13 @@ public class UsageController
 
         logger.info("Received request to retrieve usage data for app: '{}' and user: '{}'", app, (user.isPresent() ? user.get() : "empty"));
         return this.usageService.getUsage(app, user);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value="/usage/apps", method=RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    public Set<String> getUsageApps()
+    {
+        logger.info("Received request to retrieve usage apps.");
+        return this.usageService.getUsageApps();
     }
 }
