@@ -90,10 +90,10 @@ public class UsageServiceImpl implements UsageService
         List<Usage> result;
 
         if(app.isPresent() && user.isPresent())
-            return usageMap.get(app).stream().filter(usage -> usage.getUser().equals(user.get())).collect(toList());
+            return usageMap.get(app.get()).stream().filter(usage -> usage.getUser().equals(user.get())).collect(toList());
 
         if(app.isPresent())
-            return usageMap.get(app);
+            return usageMap.get(app.get());
 
         return new ArrayList(usageMap.values());
     }
