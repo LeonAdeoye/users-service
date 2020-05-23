@@ -11,6 +11,6 @@ public interface UsageService
     void initialize();
     int getCurrentMonthIndex();
     Usage saveUsage(Usage usage);
-    List<Usage> getUsage(String app, Optional<String> user);
+    List<Usage> getUsage(Optional<String> app, Optional<String> user);
     Set<String> getUsageApps();
 }

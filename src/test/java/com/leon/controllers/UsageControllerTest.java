@@ -58,7 +58,7 @@ public class UsageControllerTest
                 .param("user", "horatio"))
                 .andExpect(status().isOk());
         // Assert
-        verify(usageServiceMock, times(1)).getUsage("users app", Optional.of("horatio"));
+        verify(usageServiceMock, times(1)).getUsage(Optional.of("users app"), Optional.of("horatio"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -74,7 +74,7 @@ public class UsageControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(usageServiceMock, never()).getUsage("", Optional.of("horatio"));
+            verify(usageServiceMock, never()).getUsage(Optional.of(""), Optional.of("horatio"));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );
@@ -95,7 +95,7 @@ public class UsageControllerTest
         catch(NestedServletException e)
         {
             // Assert
-            verify(usageServiceMock, never()).getUsage("users app", Optional.of(""));
+            verify(usageServiceMock, never()).getUsage(Optional.of("users app"), Optional.of(""));
             assertNotNull( e );
             assertNotNull( e.getCause() );
             assertTrue( e.getCause() instanceof IllegalArgumentException );

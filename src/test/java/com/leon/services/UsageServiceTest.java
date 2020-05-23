@@ -104,7 +104,7 @@ public class UsageServiceTest
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
         usageService.initialize();
         // Act
-        List<Usage> result = usageService.getUsage("users app", Optional.of("horatio"));
+        List<Usage> result = usageService.getUsage(Optional.of("users app"), Optional.of("horatio"));
         // Assert
         assertEquals("should return only 1 usage in list", result.size(), 1);
         assertEquals("should return user's app usage", result.get(0).getApp(), "users app");
@@ -122,7 +122,7 @@ public class UsageServiceTest
         when(userRepositoryMock.findAll(new Sort(Sort.Direction.ASC, "app"))).thenReturn(usages);
         usageService.initialize();
         // Act
-        List<Usage> result = usageService.getUsage("users app", Optional.empty());
+        List<Usage> result = usageService.getUsage(Optional.of("users app"), Optional.empty());
         // Assert
         assertEquals("should return only 2 usages in list", result.size(), 2);
         assertEquals("should return user's app usage", result.get(0).getApp(), "users app");

@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class UsageServiceImpl implements UsageService
@@ -82,18 +83,22 @@ public class UsageServiceImpl implements UsageService
     }
 
     @Override
-    public List<Usage> getUsage(String app, Optional<String> user)
+    public List<Usage> getUsage(Optional<String> app, Optional<String> user)
     {
+        logger.info("Successfully retrieved usages from usage map.");
+
         List<Usage> result;
 
-        if(user.isPresent())
-            result = usageMap.get(app).stream().filter(usage -> usage.getUser().equals(user.get())).collect(Collectors.toList());
-        else
-            result = usageMap.get(app);
+        if(app.isPresent() && user.isPresent())
+            return usageMap.get(app).stream().filter(usage -> usage.getUser().equals(user.get())).collect(toList());
 
-        logger.info("Successfully retrieved {} usages from usage map.", ((result != null) ? result.size() : 0));
-        return result;
+        if(app.isPresent())
+            return usageMap.get(app);
+
+        return new ArrayList(usageMap.values());
     }
+
+
 
     @Override
     public Set<String> getUsageApps()

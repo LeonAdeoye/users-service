@@ -49,12 +49,12 @@ public class UsageController
 
     @CrossOrigin
     @RequestMapping(value="/usage", method=RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
-    public List<Usage> getUsage(@RequestParam final String app, @RequestParam(required=false) final Optional<String> user)
+    public List<Usage> getUsage(@RequestParam(required=false) final Optional<String> app, @RequestParam(required=false) final Optional<String> user)
     {
-        if(app == null || app.trim().isEmpty())
+        if(app.isPresent() && app.get().trim().isEmpty())
         {
-            logger.error("The app argument cannot be null or empty.");
-            throw new IllegalArgumentException("app argument is invalid");
+            logger.error("The app argument cannot be empty.");
+            throw new IllegalArgumentException("app argument is empty");
         }
 
         if(user.isPresent() && user.get().trim().isEmpty())
@@ -63,7 +63,7 @@ public class UsageController
             throw new IllegalArgumentException("user argument is empty");
         }
 
-        logger.info("Received request to retrieve usage data for app: '{}' and user: '{}'", app, (user.isPresent() ? user.get() : "empty"));
+        logger.info("Received request to retrieve usage data for app: '{}' and user: '{}'", (app.isPresent() ? app.get() : "empty"), (user.isPresent() ? user.get() : "empty"));
         return this.usageService.getUsage(app, user);
     }
 
