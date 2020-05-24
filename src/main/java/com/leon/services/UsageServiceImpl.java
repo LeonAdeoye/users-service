@@ -87,15 +87,13 @@ public class UsageServiceImpl implements UsageService
     {
         logger.info("Successfully retrieved usages from usage map.");
 
-        List<Usage> result;
-
         if(app.isPresent() && user.isPresent())
             return usageMap.get(app.get()).stream().filter(usage -> usage.getUser().equals(user.get())).collect(toList());
 
         if(app.isPresent())
             return usageMap.get(app.get());
 
-        return new ArrayList(usageMap.values());
+        return usageMap.values().stream().flatMap(Collection::stream).collect(toList());
     }
 
 
