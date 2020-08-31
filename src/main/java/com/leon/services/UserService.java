@@ -7,7 +7,7 @@ public interface UserService
 {
     List<User> getAllUsers();
     List<User> getDeskUsers(String deskName);
-    User getUser(String userId);
+    User getUser(String id);
     void initialize();
     User saveUser(User user);
 }

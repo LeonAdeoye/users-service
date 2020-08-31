@@ -32,15 +32,15 @@ public class UserServiceImpl implements UserService
     @PostConstruct
     public void initialize()
     {
-        usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(User::getUserId, user -> user));
-        logger.info("Loaded users from persistence store during initialization into map: {}", usersMap);
+        usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(User::getId, user -> user));
+        logger.info("Loaded users from persistence store during initialization into map: {} using ID as the map key", usersMap);
     }
 
     @Override
     public User saveUser(User user)
     {
         user = userRepository.save(user);
-        usersMap.put(user.getUserId(), user);
+        usersMap.put(user.getId(), user);
         return user;
     }
 
@@ -57,8 +57,8 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public User getUser(String userId)
+    public User getUser(String id)
     {
-        return usersMap.get(userId);
+        return usersMap.get(id);
     }
 }
