@@ -64,7 +64,7 @@ public class UserController
             throw new NullPointerException("user argument is null");
         }
 
-        logger.info("Received request to persist user: ", user);
+        logger.info("Received request to persist user: {}", user);
         return this.userService.saveUser(user);
     }
 }

@@ -96,8 +96,6 @@ public class UsageServiceImpl implements UsageService
         return usageMap.values().stream().flatMap(Collection::stream).collect(toList());
     }
 
-
-
     @Override
     public Set<String> getUsageApps()
     {
