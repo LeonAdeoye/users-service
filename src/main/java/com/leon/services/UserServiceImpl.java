@@ -1,5 +1,6 @@
 package com.leon.services;
 
+import com.leon.models.Usage;
 import com.leon.models.User;
 import com.leon.repositories.UserRepository;
 import org.slf4j.Logger;
@@ -7,8 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,15 +26,10 @@ public class UserServiceImpl implements UserService
     @Autowired
     UserRepository userRepository;
 
-    private Sort sortByUserIdAsc()
-    {
-        return new Sort(Sort.Direction.ASC, "userId");
-    }
-
     @PostConstruct
     public void initialize()
     {
-        usersMap = userRepository.findAll(sortByUserIdAsc()).stream().collect(Collectors.toMap(User::getId, user -> user));
+        usersMap = userRepository.findAll().stream().collect(Collectors.toMap(User::getId, user -> user));
         logger.info("Loaded users from persistence store during initialization into map: {} using ID as the map key", usersMap);
     }
 

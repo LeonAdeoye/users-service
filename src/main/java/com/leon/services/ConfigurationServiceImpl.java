@@ -1,10 +1,10 @@
 package com.leon.services;
 import com.leon.models.Configuration;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 

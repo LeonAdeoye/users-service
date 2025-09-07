@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.leon.repositories.UsageRepository;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -25,15 +24,10 @@ public class UsageServiceImpl implements UsageService
     @Autowired
     UsageRepository usageRepository;
 
-    private Sort sortByAppNameAsc()
-    {
-        return new Sort(Sort.Direction.ASC, "app");
-    }
-
     @PostConstruct
     public void initialize()
     {
-        List<Usage> usages = usageRepository.findAll(sortByAppNameAsc());
+        List<Usage> usages = usageRepository.findAll().stream().sorted(Comparator.comparing(Usage::getApp)).collect(toList());
         logger.info("Loaded {} usages from persistence store during initialization.", usages.size());
         usageMap = usages.stream().collect(groupingBy(Usage::getApp));
     }
